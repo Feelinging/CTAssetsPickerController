@@ -361,8 +361,12 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
     {
         [self.collectionView reloadData];
         
-        if (self.collectionView.contentOffset.y <= 0)
-            [self.collectionView setContentOffset:CGPointMake(0, self.collectionViewLayout.collectionViewContentSize.height)];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSInteger section = [self numberOfSectionsInCollectionView:self.collectionView] - 1;
+            NSInteger item = [self collectionView:self.collectionView numberOfItemsInSection:section] - 1;
+            NSIndexPath *lastIndexPath = [NSIndexPath indexPathForItem:item inSection:section];
+            [self.collectionView scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        });
     }
     else
     {
